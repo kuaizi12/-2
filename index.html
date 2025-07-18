@@ -14,7 +14,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #2b5876);
+            background: linear-gradient(135deg, #1a2a6c, #2b5876, #4a235a);
             color: #333;
             min-height: 100vh;
             padding: 20px;
@@ -72,7 +72,7 @@
         }
         
         .input-section, .result-section {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             padding: 30px;
@@ -199,7 +199,7 @@
         }
         
         .rules-section {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             padding: 30px;
@@ -223,6 +223,7 @@
         
         .rule-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         .rule-card h3 {
@@ -280,6 +281,36 @@
             font-weight: bold;
             margin: 0 5px;
             user-select: none;
+            transition: all 0.2s;
+        }
+        
+        .counter-btn:hover {
+            transform: scale(1.1);
+            background: #2b5876;
+        }
+        
+        .bonus-factor-chart {
+            margin-top: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #4a235a;
+        }
+        
+        .chart-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .chart-row:last-child {
+            border-bottom: none;
+        }
+        
+        .highlight-row {
+            background: #e6f7ff;
+            font-weight: 600;
         }
         
         @media (max-width: 768px) {
@@ -453,8 +484,8 @@
                     <ul>
                         <li>提成 = 总积分 × 提成系数</li>
                         <li>1户: 系数 0.2</li>
-                        <li>2-3户: 系数 0.4</li>
-                        <li>4户: 系数 0.6</li>
+                        <li>2户: 系数 0.4</li>
+                        <li>3-4户: 系数 0.6</li>
                         <li>5-9户: 系数 0.8</li>
                         <li>10-14户: 系数 1.0</li>
                         <li>≥15户: 系数 1.2</li>
@@ -477,6 +508,34 @@
                         <li>129全家福 (129元): 294.78积分</li>
                         <li>169全家福 (169元): 367.58积分</li>
                     </ul>
+                </div>
+            </div>
+            
+            <div class="bonus-factor-chart">
+                <h3><i class="fas fa-chart-bar"></i> 提成系数阶梯表</h3>
+                <div class="chart-row">
+                    <span>1户</span>
+                    <span>0.2</span>
+                </div>
+                <div class="chart-row">
+                    <span>2户</span>
+                    <span>0.4</span>
+                </div>
+                <div class="chart-row">
+                    <span>3-4户</span>
+                    <span>0.6</span>
+                </div>
+                <div class="chart-row">
+                    <span>5-9户</span>
+                    <span>0.8</span>
+                </div>
+                <div class="chart-row">
+                    <span>10-14户</span>
+                    <span>1.0</span>
+                </div>
+                <div class="chart-row highlight-row">
+                    <span>≥15户</span>
+                    <span>1.2</span>
                 </div>
             </div>
         </div>
@@ -555,14 +614,21 @@
             else if (totalSales > 200) baseSalary = 1000;
             else if (totalSales > 100) baseSalary = 500;
             
-            // 计算提成系数
+            // 计算提成系数（根据新规则）
             let bonusFactor = 0;
-            if (totalHouseholds >= 15) bonusFactor = 1.2;
-            else if (totalHouseholds >= 10) bonusFactor = 1.0;
-            else if (totalHouseholds >= 5) bonusFactor = 0.8;
-            else if (totalHouseholds >= 4) bonusFactor = 0.6;
-            else if (totalHouseholds >= 2) bonusFactor = 0.4;
-            else if (totalHouseholds >= 1) bonusFactor = 0.2;
+            if (totalHouseholds >= 15) {
+                bonusFactor = 1.2;
+            } else if (totalHouseholds >= 10) {
+                bonusFactor = 1.0;
+            } else if (totalHouseholds >= 5) {
+                bonusFactor = 0.8;
+            } else if (totalHouseholds >= 3) {
+                bonusFactor = 0.6;
+            } else if (totalHouseholds === 2) {
+                bonusFactor = 0.4;
+            } else if (totalHouseholds === 1) {
+                bonusFactor = 0.2;
+            }
             
             // 计算提成金额
             const bonusAmount = totalPoints * bonusFactor;
