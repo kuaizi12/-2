@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全家福宽带销售工资计算器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #2b5876);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        header .logo {
+            background: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        header .logo i {
+            color: #1a2a6c;
+            font-size: 28px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .calculator-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .input-section, .result-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1a2a6c;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+        
+        .section-title i {
+            background: #1a2a6c;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th {
+            background: #f8f9fa;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        input:focus {
+            border-color: #1a2a6c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.2);
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s;
+        }
+        
+        .result-box.highlight {
+            background: #e6f7ff;
+            border-left: 4px solid #1890ff;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 12px 0;
+            font-size: 1.1rem;
+        }
+        
+        .result-label {
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .result-value {
+            font-weight: 600;
+            color: #1a2a6c;
+            font-size: 1.2rem;
+        }
+        
+        .total-salary {
+            background: linear-gradient(to right, #1a2a6c, #2b5876);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .total-salary::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        .total-salary .amount {
+            font-size: 2.5rem;
+            margin: 10px 0;
+            color: #ffd700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .rules-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+            margin-top: 25px;
+        }
+        
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .rule-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #1a2a6c;
+            transition: transform 0.3s;
+        }
+        
+        .rule-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .rule-card h3 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rule-card ul {
+            padding-left: 20px;
+        }
+        
+        .rule-card li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .product-badge {
+            display: inline-block;
+            background: #e6f7ff;
+            color: #1890ff;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px 0;
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 40px;
+        }
+        
+        .input-counter {
+            display: flex;
+            align-items: center;
+        }
+        
+        .counter-btn {
+            background: #1a2a6c;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 5px;
+            user-select: none;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-container {
+                flex-direction: column;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .total-salary .amount {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <div class="logo">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                全家福宽带销售工资计算器
+            </h1>
+            <p>输入您本月各类全家福宽带的办理数量，系统将自动计算您的底薪、提成和总工资</p>
+        </header>
+        
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">
+                    <i class="fas fa-edit"></i> 销售数据录入
+                </h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>产品名称</th>
+                            <th>固定积分</th>
+                            <th>销售数量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                99全家福7折
+                                <div class="product-badge">价格: 69.3元</div>
+                            </td>
+                            <td>180.18</td>
+                            <td>
+                                <div class="input-counter">
+                                    <div class="counter-btn" id="dec-product1">-</div>
+                                    <input type="number" min="0" id="product1" value="0">
+                                    <div class="counter-btn" id="inc-product1">+</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                129全家福7折
+                                <div class="product-badge">价格: 90.3元</div>
+                            </td>
+                            <td>294.78</td>
+                            <td>
+                                <div class="input-counter">
+                                    <div class="counter-btn" id="dec-product2">-</div>
+                                    <input type="number" min="0" id="product2" value="0">
+                                    <div class="counter-btn" id="inc-product2">+</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                129全家福
+                                <div class="product-badge">价格: 129元</div>
+                            </td>
+                            <td>294.78</td>
+                            <td>
+                                <div class="input-counter">
+                                    <div class="counter-btn" id="dec-product3">-</div>
+                                    <input type="number" min="0" id="product3" value="0">
+                                    <div class="counter-btn" id="inc-product3">+</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                169全家福
+                                <div class="product-badge">价格: 169元</div>
+                            </td>
+                            <td>367.58</td>
+                            <td>
+                                <div class="input-counter">
+                                    <div class="counter-btn" id="dec-product4">-</div>
+                                    <input type="number" min="0" id="product4" value="0">
+                                    <div class="counter-btn" id="inc-product4">+</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="result-box">
+                    <div class="result-row">
+                        <span class="result-label">总办理户数：</span>
+                        <span class="result-value" id="total-households">0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">总积分：</span>
+                        <span class="result-value" id="total-points">0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">总销售额 (元)：</span>
+                        <span class="result-value" id="total-sales">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i> 工资计算结果
+                </h2>
+                
+                <div class="result-box highlight">
+                    <div class="result-row">
+                        <span class="result-label">底薪 (元)：</span>
+                        <span class="result-value" id="base-salary">0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">提成系数：</span>
+                        <span class="result-value" id="bonus-factor">0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">提成金额 (元)：</span>
+                        <span class="result-value" id="bonus-amount">0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">交通补助 (元)：</span>
+                        <span class="result-value" id="transport-subsidy">0</span>
+                    </div>
+                </div>
+                
+                <div class="total-salary">
+                    <div>本月应发工资</div>
+                    <div class="amount" id="total-salary">¥0</div>
+                    <div>底薪 + 提成 + 交通补助</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="rules-section">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i> 工资计算规则说明
+            </h2>
+            
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <h3><i class="fas fa-money-bill-wave"></i> 底薪规则</h3>
+                    <ul>
+                        <li>销售额 ≤ 100元: 无底薪</li>
+                        <li>100元 < 销售额 ≤ 200元: 500元</li>
+                        <li>200元 < 销售额 ≤ 300元: 1000元</li>
+                        <li>300元 < 销售额 ≤ 400元: 1500元</li>
+                        <li>400元 < 销售额 ≤ 500元: 2000元</li>
+                        <li>销售额 > 500元: 2500元 (封顶)</li>
+                    </ul>
+                </div>
+                
+                <div class="rule-card">
+                    <h3><i class="fas fa-chart-pie"></i> 提成规则</h3>
+                    <ul>
+                        <li>提成 = 总积分 × 提成系数</li>
+                        <li>1户: 系数 0.2</li>
+                        <li>2-3户: 系数 0.4</li>
+                        <li>4户: 系数 0.6</li>
+                        <li>5-9户: 系数 0.8</li>
+                        <li>10-14户: 系数 1.0</li>
+                        <li>≥15户: 系数 1.2</li>
+                    </ul>
+                </div>
+                
+                <div class="rule-card">
+                    <h3><i class="fas fa-bus"></i> 交通补助规则</h3>
+                    <ul>
+                        <li>总销售额 > 100元: 补贴200元</li>
+                        <li>总销售额 ≤ 100元: 无补贴</li>
+                    </ul>
+                </div>
+                
+                <div class="rule-card">
+                    <h3><i class="fas fa-star"></i> 积分规则</h3>
+                    <ul>
+                        <li>99全家福7折 (69.3元): 180.18积分</li>
+                        <li>129全家福7折 (90.3元): 294.78积分</li>
+                        <li>129全家福 (129元): 294.78积分</li>
+                        <li>169全家福 (169元): 367.58积分</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 全家福宽带销售工资计算系统 | 本工具仅用于工资计算参考，最终工资以财务核算为准</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 产品数据
+        const products = [
+            { name: "99全家福7折", price: 69.3, points: 180.18, element: document.getElementById('product1') },
+            { name: "129全家福7折", price: 90.3, points: 294.78, element: document.getElementById('product2') },
+            { name: "129全家福", price: 129, points: 294.78, element: document.getElementById('product3') },
+            { name: "169全家福", price: 169, points: 367.58, element: document.getElementById('product4') }
+        ];
+        
+        // 计算结果元素
+        const totalHouseholdsEl = document.getElementById('total-households');
+        const totalPointsEl = document.getElementById('total-points');
+        const totalSalesEl = document.getElementById('total-sales');
+        const baseSalaryEl = document.getElementById('base-salary');
+        const bonusFactorEl = document.getElementById('bonus-factor');
+        const bonusAmountEl = document.getElementById('bonus-amount');
+        const transportSubsidyEl = document.getElementById('transport-subsidy');
+        const totalSalaryEl = document.getElementById('total-salary');
+        
+        // 为所有输入框添加事件监听
+        products.forEach(product => {
+            product.element.addEventListener('input', calculateSalary);
+        });
+        
+        // 为计数器按钮添加事件
+        for (let i = 1; i <= 4; i++) {
+            document.getElementById(`inc-product${i}`).addEventListener('click', () => {
+                const input = document.getElementById(`product${i}`);
+                input.value = parseInt(input.value || 0) + 1;
+                input.dispatchEvent(new Event('input'));
+            });
+            
+            document.getElementById(`dec-product${i}`).addEventListener('click', () => {
+                const input = document.getElementById(`product${i}`);
+                const current = parseInt(input.value || 0);
+                if (current > 0) {
+                    input.value = current - 1;
+                    input.dispatchEvent(new Event('input'));
+                }
+            });
+        }
+        
+        // 计算工资函数
+        function calculateSalary() {
+            // 计算总办理户数、总积分和总销售额
+            let totalHouseholds = 0;
+            let totalPoints = 0;
+            let totalSales = 0;
+            
+            products.forEach(product => {
+                const quantity = parseInt(product.element.value) || 0;
+                totalHouseholds += quantity;
+                totalPoints += product.points * quantity;
+                totalSales += product.price * quantity;
+            });
+            
+            // 更新统计数据
+            totalHouseholdsEl.textContent = totalHouseholds;
+            totalPointsEl.textContent = totalPoints.toFixed(2);
+            totalSalesEl.textContent = totalSales.toFixed(2);
+            
+            // 计算底薪
+            let baseSalary = 0;
+            if (totalSales > 500) baseSalary = 2500;
+            else if (totalSales > 400) baseSalary = 2000;
+            else if (totalSales > 300) baseSalary = 1500;
+            else if (totalSales > 200) baseSalary = 1000;
+            else if (totalSales > 100) baseSalary = 500;
+            
+            // 计算提成系数
+            let bonusFactor = 0;
+            if (totalHouseholds >= 15) bonusFactor = 1.2;
+            else if (totalHouseholds >= 10) bonusFactor = 1.0;
+            else if (totalHouseholds >= 5) bonusFactor = 0.8;
+            else if (totalHouseholds >= 4) bonusFactor = 0.6;
+            else if (totalHouseholds >= 2) bonusFactor = 0.4;
+            else if (totalHouseholds >= 1) bonusFactor = 0.2;
+            
+            // 计算提成金额
+            const bonusAmount = totalPoints * bonusFactor;
+            
+            // 计算交通补助
+            const transportSubsidy = totalSales > 100 ? 200 : 0;
+            
+            // 计算总工资
+            const totalSalary = baseSalary + bonusAmount + transportSubsidy;
+            
+            // 更新结果区域
+            baseSalaryEl.textContent = baseSalary.toFixed(2);
+            bonusFactorEl.textContent = bonusFactor.toFixed(1);
+            bonusAmountEl.textContent = bonusAmount.toFixed(2);
+            transportSubsidyEl.textContent = transportSubsidy.toFixed(2);
+            totalSalaryEl.textContent = '¥' + totalSalary.toFixed(2);
+        }
+        
+        // 初始化计算
+        calculateSalary();
+    </script>
+</body>
+</html>
